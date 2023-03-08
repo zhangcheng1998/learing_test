@@ -1,0 +1,28 @@
+{
+    "JavaScript": {
+        "rules": {}
+    },
+    "TypeScript": {
+        "plugins": [
+            "@ies/eden-mono"
+        ],
+        "rules": {
+            "@ies/eden-mono/no-circular-deps": "error",
+            "@ies/eden-mono/no-cross-workspace-import": "error",
+            "@ies/eden-mono/no-import-of-apps": "error",
+            "@ies/eden-mono/resolve-deps": "off",
+            "@ies/eden-mono/tag-constraints": "error",
+            "@typescript-eslint/naming-convention": "off",
+            "@typescript-eslint/ban-ts-comment": "off",
+            "@typescript-eslint/explicit-module-boundary-types": "off",
+            "@typescript-eslint/explicit-function-return-type": "off",
+            "@typescript-eslint/no-explicit-any": "off",
+            "import/namespace": "off",
+            "max-lines-per-function": "off",
+            "no-use-before-define": "off",
+            "@typescript-eslint/no-use-before-define": "warn",
+            "@typescript-eslint/no-empty-function": "warn"
+        }
+    },
+    "typeChecking": false
+}
