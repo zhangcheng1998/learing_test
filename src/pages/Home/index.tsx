@@ -1,7 +1,8 @@
+// ./src/pages/Home/index.tsx
 const Home = () => {
   return (
     <div>
-      <h1>hello-ssr</h1>
+      <h1>helslo-ssr</h1>
       <button
         onClick={(): void => {
           alert("hello-ssr");

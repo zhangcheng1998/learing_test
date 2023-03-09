@@ -6,6 +6,7 @@
   "scripts": {
     "start": "npx nodemon --watch src server_build/bundle.js",
     "build:server": "npx webpack build --config ./webpack.server.js --watch",
+    "build:client": "npx webpack build --config ./webpack.client.js --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
