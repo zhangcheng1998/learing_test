@@ -7,6 +7,8 @@ import router from "@/router";
 import { Route, Routes } from "react-router-dom";
 import { StaticRouter } from "react-router-dom/server";
 import { Helmet } from "react-helmet";
+import { Provider } from "react-redux";
+import { serverStore } from "@/store";
 // import bodyParse from "body-parse";
 
 const app = express();
@@ -38,13 +40,15 @@ app.get("*", (req, res) => {
   console.log("req__a", req.path);
 
   const content = renderToString(
-    <StaticRouter location={req.path}>
-      <Routes>
-        {router?.map((item, index) => {
-          return <Route {...item} key={index} />;
-        })}
-      </Routes>
-    </StaticRouter>
+    <Provider store={serverStore}>
+      <StaticRouter location={req.path}>
+        <Routes>
+          {router?.map((item, index) => {
+            return <Route {...item} key={index} />;
+          })}
+        </Routes>
+      </StaticRouter>
+    </Provider>
   );
   const helmet = Helmet.renderStatic();
   res.send(`

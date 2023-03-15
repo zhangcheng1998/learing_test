@@ -3,15 +3,19 @@ import { hydrateRoot } from "react-dom/client";
 import router from "@/router";
 import { FC } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Provider } from "react-redux";
+import { clientStore } from "@/store";
 const Client = (): JSX.Element => {
   return (
-    <BrowserRouter>
-      <Routes>
-        {router.map((item, index) => {
-          return <Route {...item} key={index}></Route>;
-        })}
-      </Routes>
-    </BrowserRouter>
+    <Provider store={clientStore}>
+      <BrowserRouter>
+        <Routes>
+          {router.map((item, index) => {
+            return <Route {...item} key={index}></Route>;
+          })}
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   );
 };
 
