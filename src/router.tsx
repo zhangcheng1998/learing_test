@@ -4,11 +4,12 @@ import Demo from "@/pages/Demo";
 interface IRouter {
   path: string;
   element: JSX.Element;
+  loadData?: any;
 }
 
 const router: IRouter[] = [
   { path: "/", element: <Home /> },
-  { path: "/demo", element: <Demo /> },
+  { path: "/demo", element: <Demo />, loadData: Demo.getInitProps },
 ];
 
 export default router;

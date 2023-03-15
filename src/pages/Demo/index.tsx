@@ -64,4 +64,10 @@ const mapDispatchToProps = (dispatch: any) => {
 };
 
 const storeDemo: any = connect(mapStateToProps, mapDispatchToProps)(Demo);
+
+storeDemo.getInitProps = (store: any, data?: string) => {
+  return store.dispatch(getDemoData(data || "这是初始化的demo"));
+};
+
+
 export default storeDemo;

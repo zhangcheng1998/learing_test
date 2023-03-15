@@ -4,7 +4,7 @@ import childProcess from "child_process";
 import { renderToString } from "react-dom/server";
 import path from "path";
 import router from "@/router";
-import { Route, Routes } from "react-router-dom";
+import { matchRoutes, Route, RouteObject, Routes } from "react-router-dom";
 import { StaticRouter } from "react-router-dom/server";
 import { Helmet } from "react-helmet";
 import { Provider } from "react-redux";
@@ -37,33 +37,58 @@ app.post("/api/getDemoData", (req, res) => {
 });
 
 app.get("*", (req, res) => {
-  console.log("req__a", req.path);
+  const routeMap = new Map<string, () => Promise<any>>(); // path - loaddata 的map
+  router.forEach((item) => {
+    if (item.path && item.loadData) {
+      routeMap.set(item.path, item.loadData(serverStore));
+    }
+  });
 
-  const content = renderToString(
-    <Provider store={serverStore}>
-      <StaticRouter location={req.path}>
-        <Routes>
-          {router?.map((item, index) => {
-            return <Route {...item} key={index} />;
-          })}
-        </Routes>
-      </StaticRouter>
-    </Provider>
-  );
-  const helmet = Helmet.renderStatic();
-  res.send(`
+  // 匹配当前路由的routes
+  const matchedRoutes = matchRoutes(router as RouteObject[], req.path);
+
+  const promises: Array<() => Promise<any>> = [];
+  matchedRoutes?.forEach((item) => {
+    if (routeMap.has(item.pathname)) {
+      promises.push(routeMap.get(item.pathname) as () => Promise<any>);
+    }
+  });
+
+  Promise.all(promises).then((data) => {
+    // 统一放到state里
+    // 编译需要渲染的JSX, 转成对应的HTML STRING
+    const content = renderToString(
+      <Provider store={serverStore}>
+        <StaticRouter location={req.path}>
+          <Routes>
+            {router?.map((item, index) => {
+              return <Route {...item} key={index} />;
+            })}
+          </Routes>
+        </StaticRouter>
+      </Provider>
+    );
+
+    const helmet = Helmet.renderStatic();
+
+    res.send(`
     <html
-    <head>
-
-    ${helmet.title.toString()}
+      <head>
+        ${helmet.title.toString()}
         ${helmet.meta.toString()}
-    </head>
+      </head>
       <body>
         <div id="root">${content}</div>
+        <script>
+          window.context = {
+            state: ${JSON.stringify(serverStore.getState())}
+          }
+        </script>
         <script src="/index.js"></script>
       </body>
     </html>
   `);
+  });
 });
 
 app.listen(3000, () => {
