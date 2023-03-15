@@ -4,7 +4,12 @@ import childProcess from "child_process";
 import { renderToString } from "react-dom/server";
 import path from "path";
 import router from "@/router";
-import { matchRoutes, Route, RouteObject, Routes } from "react-router-dom";
+import {
+  matchRoutes,
+  Route,
+  RouteObject,
+  Routes,
+} from "react-router-dom";
 import { StaticRouter } from "react-router-dom/server";
 import { Helmet } from "react-helmet";
 import { Provider } from "react-redux";
@@ -37,16 +42,30 @@ app.post("/api/getDemoData", (req, res) => {
 });
 
 app.get("*", (req, res) => {
-  const routeMap = new Map<string, () => Promise<any>>(); // path - loaddata 的map
+  // const routeMap = new Map<string, () => Promise<any>>(); // path - loaddata 的map
+  // router.forEach((item) => {
+  //   if (item.path && item.loadData) {
+  //     routeMap.set(item.path, item.loadData(serverStore));
+  //   }
+  // });
+
+  // // 匹配当前路由的routes
+  // const matchedRoutes = matchRoutes(router as RouteObject[], req.path);
+
+  // const promises: Array<() => Promise<any>> = [];
+  // matchedRoutes?.forEach((item) => {
+  //   if (routeMap.has(item.pathname)) {
+  //     promises.push(routeMap.get(item.pathname) as () => Promise<any>);
+  //   }
+  // });
+
+  const routeMap = new Map<string, () => Promise<any>>();
   router.forEach((item) => {
     if (item.path && item.loadData) {
       routeMap.set(item.path, item.loadData(serverStore));
     }
   });
-
-  // 匹配当前路由的routes
   const matchedRoutes = matchRoutes(router as RouteObject[], req.path);
-
   const promises: Array<() => Promise<any>> = [];
   matchedRoutes?.forEach((item) => {
     if (routeMap.has(item.pathname)) {
